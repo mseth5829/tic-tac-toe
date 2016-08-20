@@ -1,13 +1,19 @@
+@font-face {
+  font-family: 'start';
+  src: url('PressStart2P.ttf');
+}
 
+*{
+  font-family: start, sans-serif;
+  color: white;
+}
 
 body {
-  /*background: url("img/space.jpg");*/
   background-color: black;
   background-size: cover;
 }
 
 h1 {
-  color: white;
   text-align: center;
 }
 
@@ -15,7 +21,6 @@ h1 {
   width: 312px;
   height: 312px;
   margin: 50px auto;
-  border: 2px solid blue;
 }
 
 .row1{
@@ -29,7 +34,6 @@ h1 {
 .square {
   width: 100px;
   height: 100px;
-  border: 2px solid white;
   float: left;
   position: relative;
 }
@@ -54,31 +58,50 @@ h1 {
   width: 60px;
   height: 60px;
   float: left;
-  color: white;
   font-size: 2.5em;
 }
 
 .scoreImg p{
-  margin: 0 0 0 28px;
+  margin: 10px 0 0 20px;
 
 }
 
 button {
   display: block;
+  width: 300px;
+  height: 50px;
   margin: 0 auto;
   margin-bottom: 35px;
+  background: transparent;
+  border: 2px solid white;
+  font-size: 20px;
 }
 
 .choices p, input{
-  color: white;
   float: left;
   text-align: center;
   margin: 0;
-  margin-left: 20px;
+  margin-left: 50px;
 }
 
 .choices{
-  width: 349px;
+  width: 770px;
   margin: 0 auto;
   margin-bottom: 60px;
+}
+
+#s1, #s2, #s4, #s7, #s8, #s5{
+  border-right: 2px solid white;
+}
+
+#s1, #s2, #s3, #s4, #s5, #s6{
+  border-bottom: 2px solid white;
+}
+
+#s2, #s3, #s6, #s8, #s9, #s5 {
+  border-left: 2px solid white;
+}
+
+#s4, #s7, #s8, #s9, #s5, #s6{
+  border-top: 2px solid white;
 }

@@ -19,50 +19,76 @@ var winningPositions = [
   [0,4,8],
   [2,4,6]
 ];
-var aiChoices = [0,1,2,3,4,5,6,7,8];
+var aiPositionChoices = [0,1,2,3,4,5,6,7,8];
 
 
 
 //Show image (toggled) and set class names when square is clicked
 function showImage(i) {
+  return function() {
 //Simulate toggle if in 2-player mode
-  // if(document.getElementById("2-player").checked === true){
-    return function() {
-//Only show image when game is still on and there is nothing in square
-      if(squareElement[i].className === "square userP"
-      || squareElement[i].className === "square enemyP"
-      || gameFinished === true){
-      }else{
-        if(toggle === 0){
-          squareElement[i].innerHTML=players[toggle];
-          squareElement[i].className="square userP";
-          toggle = 1;
-        }else {
-          squareElement[i].innerHTML=players[toggle];
-          squareElement[i].className="square enemyP";
-          toggle = 0;
-        }
-      }
-//Clear class array so we don't "push" more than required class types (more than 9)
-      classArray = [];
-    // }
-//Set up playing against computer mode
-  // } else if(document.getElementById("solo").checked === true){
-  //   return function() {
-  //     if(squareElement[i].className === "square userP"
-  //     || squareElement[i].className === "square enemyP"
-  //     || gameFinished === true){
-  //     }else{
-  //       squareElement[i].innerHTML = players[0];
-  //       squareElement[i].className="square userP";
-  //       aiChoices.splice(aiChoices.indexOf(i),1);
-  //       setTimeout(enemyMoves(), 2000);
-  //       console.log(aiChoices)
-  //   }
-  //  }
-  // }
+    if(document.getElementById("2-player").checked === true){
+      multiPlayer(i);
+//Against computer mode
+    }else if(document.getElementById("solo").checked === true){
+      solo(i);
+    }
+  }
 }
 
+
+function multiPlayer(i){
+//Only show image when game is still on and there is nothing in square
+  if(squareElement[i].className === "square userP"
+  || squareElement[i].className === "square enemyP"
+  || gameFinished === true){
+  }else{
+    if(toggle === 0){
+      squareElement[i].innerHTML=players[toggle];
+      squareElement[i].className="square userP";
+      toggle = 1;
+    }else {
+      squareElement[i].innerHTML=players[toggle];
+      squareElement[i].className="square enemyP";
+      toggle = 0;
+    }
+//Clear class array so we don't "push" more than required class types (more than 9)
+  classArray = [];
+  }
+}
+
+function solo(i) {
+  if(squareElement[i].className === "square userP"
+  || squareElement[i].className === "square enemyP"
+  || gameFinished === true){
+  }else{
+    squareElement[i].innerHTML = players[0];
+    squareElement[i].className="square userP";
+    classArray = [];
+    aiPositionChoices.splice(aiPositionChoices.indexOf(i),1);
+    console.log("aiPositionChoices :" + aiPositionChoices)
+    setTimeout(enemyMove(), 10000);
+    classArray = [];
+  }
+}
+
+function enemyMove() {
+  if(aiPositionChoices.length===0){
+  }else{
+    var enemyPosition
+    var randomMove = Math.floor(Math.random() * aiPositionChoices.length);
+    enemyPosition = aiPositionChoices[randomMove];
+    console.log("random number to choose from aiPChoices: " + randomMove)
+    console.log("random number is chosen from 0 to :" + aiPositionChoices.length)
+    console.log("enemyChosenPosition :" + enemyPosition)
+    squareElement[enemyPosition].innerHTML=players[1];
+    squareElement[enemyPosition].className = "square enemyP"
+    aiPositionChoices.splice(aiPositionChoices.indexOf(enemyPosition),1);
+    console.log("final ailist: " + aiPositionChoices)
+    createClassArray();
+    checkWinningPosition();
+  }
+}
 
 function createClassArray () {
   for(var i =0; i<squareElement.length; i++){
@@ -105,10 +131,7 @@ function clear() {
     squareElement[i].className="square"
   }
   gameFinished = false;
-}
-
-function enemyMoves() {
-  squareElement[i].innerHTML=players[1];
+  aiPositionChoices = [0,1,2,3,4,5,6,7,8];
 }
 
 for(var i=0; i<squareElement.length; i++){
@@ -116,4 +139,5 @@ for(var i=0; i<squareElement.length; i++){
   squareElement[i].addEventListener('click', createClassArray);
   squareElement[i].addEventListener('click', checkWinningPosition);
 }
+
 document.getElementById("clear").addEventListener('click', clear);
