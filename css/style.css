@@ -1,0 +1,84 @@
+
+
+body {
+  /*background: url("img/space.jpg");*/
+  background-color: black;
+  background-size: cover;
+}
+
+h1 {
+  color: white;
+  text-align: center;
+}
+
+#board{
+  width: 312px;
+  height: 312px;
+  margin: 50px auto;
+  border: 2px solid blue;
+}
+
+.row1{
+  float:left;
+}
+
+.row2, .row3 {
+  clear:left;
+}
+
+.square {
+  width: 100px;
+  height: 100px;
+  border: 2px solid white;
+  float: left;
+  position: relative;
+}
+
+.icon {
+  width: 70%;
+  height: 70%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -35px;
+  margin-left: -35px;
+}
+
+.scoreImg{
+  width:300px;
+  height: 150px;
+  margin: 0 auto;
+}
+
+.scoreImg img, .scoreImg p{
+  width: 60px;
+  height: 60px;
+  float: left;
+  color: white;
+  font-size: 2.5em;
+}
+
+.scoreImg p{
+  margin: 0 0 0 28px;
+
+}
+
+button {
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 35px;
+}
+
+.choices p, input{
+  color: white;
+  float: left;
+  text-align: center;
+  margin: 0;
+  margin-left: 20px;
+}
+
+.choices{
+  width: 349px;
+  margin: 0 auto;
+  margin-bottom: 60px;
+}
