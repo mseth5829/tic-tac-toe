@@ -78,13 +78,26 @@ function multiPlayer(i){
 function solo(i) {
   if(squareElement[i].className === "square userP"
   || squareElement[i].className === "square enemyP"
-  || gameFinished === true){
+  || gameFinished === true
+  || enemyTurn === true){
   }else{
+    console.log("Enemy's before green move turn is "+ enemyTurn);
     squareElement[i].innerHTML = players[0];
     squareElement[i].className="square userP";
     aiPositionChoices.splice(aiPositionChoices.indexOf(i),1);
+    enemyTurn = true;
+    if(enemyTurn === true){
+      for(var i=0; i<squareElement.length; i++){
+        squareElement[i].addEventListener('click',unclickable);
+      }
     enemyInterval = setInterval(enemyMove, 1000);
     classArray = [];
+    }
+  }
+}
+
+function unclickable() {
+  if(enemyTurn === true){
   }
 }
 
@@ -93,7 +106,7 @@ function enemyMove() {
 //If there is still a move to be made and game is still going on
   if(aiPositionChoices.length===0 || gameFinished === true){
   }else{
-    enemyTurn = true;
+    console.log("Enemy's turn when enemy needs to think of move is "+ enemyTurn);
     moveSetUp(i);
     aiPositionChoices.splice(aiPositionChoices.indexOf(enemyPosition),1);
     classArray = [];
@@ -128,6 +141,7 @@ function enemyWin(){
       squareElement[enemyPosition].innerHTML=players[1];
       squareElement[enemyPosition].className = "square enemyP";
       enemyTurn = false;
+      console.log("Enemy's turn after enemy win move is "+ enemyTurn);
     }
   }
 }
@@ -149,6 +163,7 @@ function enemyBlock(i) {
       squareElement[enemyPosition].innerHTML=players[1];
       squareElement[enemyPosition].className = "square enemyP";
       enemyTurn = false;
+      console.log("Enemy's turn after it decides to block is "+ enemyTurn);
     }
   }
 }
@@ -161,6 +176,7 @@ function enemyRandom() {
     squareElement[enemyPosition].innerHTML=players[1];
     squareElement[enemyPosition].className = "square enemyP"
     enemyTurn = false
+    console.log("Enemy's turn after making random move is "+ enemyTurn);
   }
 }
 
@@ -230,5 +246,3 @@ function showTurn() {
     }
   }
 }
-
-showTurn();
