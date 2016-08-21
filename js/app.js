@@ -1,9 +1,15 @@
+// WARNING: IF YOU ARE PLAYING AGAINST THE COMPUTER PLEASE BE PATIENT AND WAIT FOR YOUR
+//          TURN TO CLICK, IF NOT THE ENEMY WILL GO HAYWIRE. NOTE THAT IF YOU WIN, THE ENEMY
+//          IS SET UP TO GO FIRST IN THE NEXT ROUND, AND VICE VERSA. THANKS!
+
+alert("WARNING: IF YOU ARE PLAYING AGAINST THE COMPUTER PLEASE BE PATIENT AND WAIT FOR YOUR TURN TO CLICK, IF NOT THE ENEMY WILL GO HAYWIRE. NOTE THAT IF YOU WIN, THE ENEMY IS SET UP TO GO FIRST IN THE NEXT ROUND, AND VICE VERSA. THANKS!")
+
 var toggle = 0;
 var classArray = [];
-var classes = {};
 var gameFinished = false;
 var playerScore = 0;
 var enemyScore = 0;
+var enemyTurn = false;
 var squareElement = document.getElementsByClassName("square");
 var players = [
   '<img src="css/img/user2.gif" class="icon">',
@@ -20,23 +26,32 @@ var winningPositions = [
   [2,4,6]
 ];
 var aiPositionChoices = [0,1,2,3,4,5,6,7,8];
+var enemyInterval;
+var enemyPosition;
+var blockPositions = [
+  [[1,2],[4,8],[3,6],[1,2],0],
+  [[0,2],[4,7],[0,2],[0,2],1],
+  [[0,1],[4,6],[5,8],[0,1],2],
+  [[0,6],[4,5],[0,6],[9,9],3],
+  [[0,8],[2,6],[3,5],[1,7],4],
+  [[2,8],[3,4],[2,8],[3,4],5],
+  [[2,4],[0,3],[7,8],[2,4],6],
+  [[6,8],[1,4],[1,4],[6,8],7],
+  [[0,4],[2,5],[6,7],[0,4],8]
+];
 
-
-
-//Show image (toggled) and set class names when square is clicked
-function showImage(i) {
+//Depending on whether user has chosen solo or 2-player mode, go down different tracks
+function chooseMode(i) {
   return function() {
-//Simulate toggle if in 2-player mode
     if(document.getElementById("2-player").checked === true){
       multiPlayer(i);
-//Against computer mode
     }else if(document.getElementById("solo").checked === true){
       solo(i);
     }
   }
 }
 
-
+//Toggle between red and green heads when in 2-player mode
 function multiPlayer(i){
 //Only show image when game is still on and there is nothing in square
   if(squareElement[i].className === "square userP"
@@ -47,16 +62,19 @@ function multiPlayer(i){
       squareElement[i].innerHTML=players[toggle];
       squareElement[i].className="square userP";
       toggle = 1;
+      enemyTurn = true;
     }else {
       squareElement[i].innerHTML=players[toggle];
       squareElement[i].className="square enemyP";
       toggle = 0;
+      enemyTurn = false;
     }
 //Clear class array so we don't "push" more than required class types (more than 9)
   classArray = [];
   }
 }
 
+//After displaying user's move remove that "position" from enemy's "aiPositionChoices" and set up enemy move
 function solo(i) {
   if(squareElement[i].className === "square userP"
   || squareElement[i].className === "square enemyP"
@@ -64,56 +82,109 @@ function solo(i) {
   }else{
     squareElement[i].innerHTML = players[0];
     squareElement[i].className="square userP";
-    classArray = [];
     aiPositionChoices.splice(aiPositionChoices.indexOf(i),1);
-    console.log("aiPositionChoices :" + aiPositionChoices)
-    setTimeout(enemyMove(), 10000);
+    enemyInterval = setInterval(enemyMove, 1000);
     classArray = [];
   }
 }
 
+//Set up enemy move and then have that square be "unplayable" by enemy, check if enemy's move has garnerned him a win
 function enemyMove() {
-  if(aiPositionChoices.length===0){
+//If there is still a move to be made and game is still going on
+  if(aiPositionChoices.length===0 || gameFinished === true){
   }else{
-    var enemyPosition
-    var randomMove = Math.floor(Math.random() * aiPositionChoices.length);
-    enemyPosition = aiPositionChoices[randomMove];
-    console.log("random number to choose from aiPChoices: " + randomMove)
-    console.log("random number is chosen from 0 to :" + aiPositionChoices.length)
-    console.log("enemyChosenPosition :" + enemyPosition)
-    squareElement[enemyPosition].innerHTML=players[1];
-    squareElement[enemyPosition].className = "square enemyP"
+    enemyTurn = true;
+    moveSetUp(i);
     aiPositionChoices.splice(aiPositionChoices.indexOf(enemyPosition),1);
-    console.log("final ailist: " + aiPositionChoices)
+    classArray = [];
     createClassArray();
     checkWinningPosition();
+    clearInterval(enemyInterval);
+    enemyTurn = false
   }
 }
 
-function createClassArray () {
+//Enemy will look for winning positions first, then potential blocking positions, if not it will choose a random position
+function moveSetUp(i) {
+  enemyWin();
+  enemyBlock();
+  enemyRandom();
+}
+
+//If enemy is set up to win choose corresponding winning position
+function enemyWin(){
+  for(var i = 0; i<blockPositions.length; i++){
+    if(
+       classArray[blockPositions[i][0][0]] === "square enemyP" && classArray[blockPositions[i][0][1]] === "square enemyP"
+    && classArray[blockPositions[i][4]] !== "square userP" && enemyTurn === true
+    || classArray[blockPositions[i][1][0]] === "square enemyP" && classArray[blockPositions[i][1][1]] === "square enemyP"
+    && classArray[blockPositions[i][4]] !== "square userP" && enemyTurn === true
+    || classArray[blockPositions[i][2][0]] === "square enemyP" && classArray[blockPositions[i][2][1]] === "square enemyP"
+    && classArray[blockPositions[i][4]] !== "square userP" && enemyTurn === true
+    || classArray[blockPositions[i][3][0]] === "square enemyP" && classArray[blockPositions[i][3][1]] === "square enemyP"
+    && classArray[blockPositions[i][4]] !== "square userP" && enemyTurn === true
+    ){
+      enemyPosition=blockPositions[i][4];
+      squareElement[enemyPosition].innerHTML=players[1];
+      squareElement[enemyPosition].className = "square enemyP";
+      enemyTurn = false;
+    }
+  }
+}
+
+//If user is set up to win choose corresponding block position
+function enemyBlock(i) {
+  for(var i = 0; i<blockPositions.length; i++){
+    if(
+       classArray[blockPositions[i][0][0]] === "square userP" && classArray[blockPositions[i][0][1]] === "square userP"
+    && classArray[blockPositions[i][4]] !== "square enemyP" && enemyTurn === true
+    || classArray[blockPositions[i][1][0]] === "square userP" && classArray[blockPositions[i][1][1]] === "square userP"
+    && classArray[blockPositions[i][4]] !== "square enemyP" && enemyTurn === true
+    || classArray[blockPositions[i][2][0]] === "square userP" && classArray[blockPositions[i][2][1]] === "square userP"
+    && classArray[blockPositions[i][4]] !== "square enemyP" && enemyTurn === true
+    || classArray[blockPositions[i][3][0]] === "square userP" && classArray[blockPositions[i][3][1]] === "square userP"
+    && classArray[blockPositions[i][4]] !== "square enemyP" && enemyTurn === true
+    ){
+      enemyPosition=blockPositions[i][4];
+      squareElement[enemyPosition].innerHTML=players[1];
+      squareElement[enemyPosition].className = "square enemyP";
+      enemyTurn = false;
+    }
+  }
+}
+
+//Randomly place enemy move from remaining positions on board
+function enemyRandom() {
+  if(enemyTurn === true){
+    var randomMove = Math.floor(Math.random() * aiPositionChoices.length);
+    enemyPosition = aiPositionChoices[randomMove];
+    squareElement[enemyPosition].innerHTML=players[1];
+    squareElement[enemyPosition].className = "square enemyP"
+    enemyTurn = false
+  }
+}
+
+//Store user and enemy positions in a class array
+function createClassArray() {
   for(var i =0; i<squareElement.length; i++){
-//Create an array of class types for squares
     classArray.push(squareElement[i].className);
   }
-//Create an object that holds key/value pairs of square-position/class-type
-  for(var i =0; i<squareElement.length; i++){
-    classes[i]=classArray[i];
-  }
 }
 
-//Compare class types to winning positions
+
+// Compare user/enemy class types to winning positions
 function checkWinningPosition() {
   for(var i = 0; i<winningPositions.length; i++){
-    if(classes[winningPositions[i][0]] === "square userP"
-    && classes[winningPositions[i][1]] === "square userP"
-    && classes[winningPositions[i][2]] === "square userP"
+    if(classArray[winningPositions[i][0]] === "square userP"
+    && classArray[winningPositions[i][1]] === "square userP"
+    && classArray[winningPositions[i][2]] === "square userP"
     && gameFinished === false){
       playerScore += 1;
       document.getElementById("userScore").textContent=playerScore;
       gameFinished = true;
-    }else if(classes[winningPositions[i][0]] === "square enemyP"
-    && classes[winningPositions[i][1]] === "square enemyP"
-    && classes[winningPositions[i][2]] === "square enemyP"
+    }else if(classArray[winningPositions[i][0]] === "square enemyP"
+    && classArray[winningPositions[i][1]] === "square enemyP"
+    && classArray[winningPositions[i][2]] === "square enemyP"
     && gameFinished === false){
       enemyScore += 1;
       document.getElementById("enemyScore").innerHTML=enemyScore;
@@ -121,6 +192,7 @@ function checkWinningPosition() {
     }
   }
 }
+
 
 //Clear board and reset class names when button is pressed
 function clear() {
@@ -132,12 +204,31 @@ function clear() {
   }
   gameFinished = false;
   aiPositionChoices = [0,1,2,3,4,5,6,7,8];
+  classArray = [];
+  showTurn();
 }
 
 for(var i=0; i<squareElement.length; i++){
-  squareElement[i].addEventListener('click', showImage(i));
+  squareElement[i].addEventListener('click', chooseMode(i));
   squareElement[i].addEventListener('click', createClassArray);
   squareElement[i].addEventListener('click', checkWinningPosition);
+  squareElement[i].addEventListener('click', showTurn);
 }
 
 document.getElementById("clear").addEventListener('click', clear);
+
+function showTurn() {
+  if (document.getElementById("solo").checked === true){
+    document.getElementById('turn').innerHTML=""
+  }else if (document.getElementById("2-player").checked === true){
+    if(gameFinished === true){
+      document.getElementById('turn').innerHTML="Round ended"
+    }else if(enemyTurn === true){
+      document.getElementById('turn').innerHTML="<span style='color: red'>Red turn</span>"
+    }else if(enemyTurn === false){
+      document.getElementById('turn').innerHTML="<span style='color: green'>Green turn</span>"
+    }
+  }
+}
+
+showTurn();

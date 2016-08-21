@@ -3,7 +3,7 @@
   src: url('PressStart2P.ttf');
 }
 
-*{
+* {
   font-family: start, sans-serif;
   color: white;
 }
@@ -17,13 +17,14 @@ h1 {
   text-align: center;
 }
 
-#board{
+#board {
   width: 312px;
   height: 312px;
   margin: 50px auto;
+  position: relative;
 }
 
-.row1{
+.row1 {
   float:left;
 }
 
@@ -48,22 +49,21 @@ h1 {
   margin-left: -35px;
 }
 
-.scoreImg{
+.scoreImg {
   width:300px;
   height: 150px;
   margin: 0 auto;
 }
 
-.scoreImg img, .scoreImg p{
+.scoreImg img, .scoreImg p {
   width: 60px;
   height: 60px;
   float: left;
   font-size: 2.5em;
 }
 
-.scoreImg p{
+.scoreImg p {
   margin: 10px 0 0 20px;
-
 }
 
 button {
@@ -77,24 +77,32 @@ button {
   font-size: 20px;
 }
 
-.choices p, input{
+.choices label, input {
   float: left;
   text-align: center;
   margin: 0;
-  margin-left: 50px;
+  margin-left: 30px;
 }
 
-.choices{
+.choices {
   width: 770px;
+  height: 10px;
   margin: 0 auto;
-  margin-bottom: 60px;
+  margin-top: 30px;
+  margin-bottom: 50px;
 }
 
-#s1, #s2, #s4, #s7, #s8, #s5{
+#turn{
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: -20px;
+}
+
+#s1, #s2, #s4, #s7, #s8, #s5 {
   border-right: 2px solid white;
 }
 
-#s1, #s2, #s3, #s4, #s5, #s6{
+#s1, #s2, #s3, #s4, #s5, #s6 {
   border-bottom: 2px solid white;
 }
 
@@ -102,6 +110,6 @@ button {
   border-left: 2px solid white;
 }
 
-#s4, #s7, #s8, #s9, #s5, #s6{
+#s4, #s7, #s8, #s9, #s5, #s6 {
   border-top: 2px solid white;
 }

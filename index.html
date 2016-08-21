@@ -9,8 +9,10 @@
 <body>
   <h1>Tic-Tac-Toe</h1>
   <div class="choices">
-    <input type="radio" name="gameType" id="solo"><p>Play against computer</p>
-    <input type="radio" name="gameType" id="2-player"><p>2-player mode</p>
+    <input type="radio" name="gameType" id="solo">
+    <label for="gameType">Play against computer</label>
+    <input type="radio" name="gameType" id="2-player">
+    <label for="gameType">2-player mode</label>
   </div>
   <div id="board">
     <div class="row1">
@@ -29,6 +31,7 @@
       <div class="square" id="s9"></div>
     </div>
   </div>
+  <div id="turn"></div>
   <div class="scoreImg">
     <button id="clear">Clear</button>
     <img src="css/img/user2.gif"><p id="userScore">0</p>
