@@ -1,8 +1,3 @@
-// WARNING: IF YOU ARE PLAYING AGAINST THE COMPUTER PLEASE BE PATIENT AND WAIT FOR YOUR
-//          TURN TO CLICK, IF NOT THE ENEMY WILL GO HAYWIRE. NOTE THAT IF YOU WIN, THE ENEMY
-//          IS SET UP TO GO FIRST IN THE NEXT ROUND, AND VICE VERSA. THANKS!
-
-alert("WARNING: IF YOU ARE PLAYING AGAINST THE COMPUTER PLEASE BE PATIENT AND WAIT FOR YOUR TURN TO CLICK, IF NOT THE ENEMY WILL GO HAYWIRE. NOTE THAT IF YOU WIN, THE ENEMY IS SET UP TO GO FIRST IN THE NEXT ROUND, AND VICE VERSA. THANKS!")
 
 var toggle = 0;
 var classArray = [];
@@ -78,8 +73,7 @@ function multiPlayer(i){
 function solo(i) {
   if(squareElement[i].className === "square userP"
   || squareElement[i].className === "square enemyP"
-  || gameFinished === true
-  || enemyTurn === true){
+  || gameFinished === true){
   }else{
     console.log("Enemy's before green move turn is "+ enemyTurn);
     squareElement[i].innerHTML = players[0];
@@ -224,15 +218,7 @@ function clear() {
   showTurn();
 }
 
-for(var i=0; i<squareElement.length; i++){
-  squareElement[i].addEventListener('click', chooseMode(i));
-  squareElement[i].addEventListener('click', createClassArray);
-  squareElement[i].addEventListener('click', checkWinningPosition);
-  squareElement[i].addEventListener('click', showTurn);
-}
-
-document.getElementById("clear").addEventListener('click', clear);
-
+//Show game status on multiplayer mode
 function showTurn() {
   if (document.getElementById("solo").checked === true){
     document.getElementById('turn').innerHTML=""
@@ -246,3 +232,13 @@ function showTurn() {
     }
   }
 }
+
+for(var i=0; i<squareElement.length; i++){
+  squareElement[i].addEventListener('click', chooseMode(i));
+  squareElement[i].addEventListener('click', createClassArray);
+  squareElement[i].addEventListener('click', checkWinningPosition);
+  squareElement[i].addEventListener('click', showTurn);
+}
+
+document.getElementById("clear").addEventListener('click', clear);
+document.getElementById("solo").addEventListener('click', enemyTurn === false);
